@@ -9,6 +9,8 @@ The current version is still to be updated.
 ## Data preparation
 We cannot provide the datasets. Please apply for each dataset yourself. After downloading the files, move them into the datasets/ directory.
 
+Before using them for training and validation, please crop the facial images.
+
 ## Train and validation on CAS(ME)^3 dataset for 4-class recognition
 ``` bash
 python train_casme3_4c.py
