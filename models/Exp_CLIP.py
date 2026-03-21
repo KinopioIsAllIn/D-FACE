@@ -1,7 +1,6 @@
 import torch
 from torch import nn
 from .clip import clip
-# from .BLIP2_T5 import *
 import torch.nn.functional as F
 
 
@@ -30,29 +29,24 @@ class PretrainedTextEncoder(nn.Module):
 class SparseAttnPooling(nn.Module):
     def __init__(self, dim, temperature=1.0, sparse_reg="entropy"):
         super().__init__()
-        self.query = nn.Parameter(torch.randn(dim))  # 可学习查询向量
+        self.query = nn.Parameter(torch.randn(dim)) 
         self.temperature = temperature
         assert sparse_reg in ["entropy", "gini"]
         self.sparse_reg = sparse_reg
-        self.ln = nn.LayerNorm(dim)  # 稍微稳一点
+        self.ln = nn.LayerNorm(dim) 
 
     def forward(self, x):
         # x: [B, L, D]
         x = self.ln(x)
-        # 打分: [B, L]
         scores = torch.matmul(x, self.query) / (self.temperature * (x.size(-1) ** 0.5))
         attn = F.softmax(scores, dim=1)
-        # 聚合
         z = torch.einsum("bl, bld -> bd", attn, x)
 
-        # 稀疏正则: 最小化熵 或 Gini impurity
         if self.sparse_reg == "entropy":
-            # 熵: -sum p log p, 我们要“最小化熵”(让分布更尖)，所以 loss = +entropy
             eps = 1e-8
             entropy = -(attn * (attn + eps).log()).sum(dim=1).mean()
             sparsity_loss = entropy
         else:
-            # Gini: sum p(1-p)，越小越稀疏；直接最小化即可
             gini = (attn * (1 - attn)).sum(dim=1).mean()
             sparsity_loss = gini
 
@@ -81,7 +75,7 @@ class VQCodeTransformer(nn.Module):
             nn.Linear(dim, 768),
         )
 
-        self.cls_proj = nn.Sequential(         # 对整个序列求 CLS 表达
+        self.cls_proj = nn.Sequential(  
             nn.Linear(dim, classnum)
         )
 
@@ -97,35 +91,22 @@ class VQCodeTransformer(nn.Module):
                 nn.init.constant_(m.weight, 1.0)
                 nn.init.constant_(m.bias, 0)
 
-    def forward(self, indices, text):  # [B, 16]
+    def forward(self, indices, text):
 
-        B = indices.size(0) # B, 16
-        x = self.token_embed(indices)  # [B, 16, dim]
+        B = indices.size(0)
+        x = self.token_embed(indices)
 
-        x = x + self.pos_embed  # 加位置编码
+        x = x + self.pos_embed 
 
-        x = self.transformer(x)  # [B, 17, dim]
+        x = self.transformer(x) 
 
-        z, attn, sparse_loss = self.sparse_pool(x)  # SparseAttnPooling 或 MultiQuerySparsePooling
+        z, attn, sparse_loss = self.sparse_pool(x)
 
         clip_embedding = self.clip_proj(z)
         image_features = clip_embedding / clip_embedding.norm(dim=-1, keepdim=True)
 
         class_results = self.cls_proj(z)
-
-        # 基于类别prompts生成embeddings, 并计算
-        if text is not None:
-            text_tokenized = clip.tokenize(text, context_length=77, truncate=True).to('cuda')
-
-            text_features = self.clip_model.encode_text(text_tokenized)
-            text_features = text_features.float()
-            # text_features = self.projection_head(text_features)
-            text_features = text_features / text_features.norm(dim=-1, keepdim=True)
-
-            logit_scale = self.clip_model.logit_scale.exp()
-
-            return class_results, image_features, text_features, logit_scale, sparse_loss#, attn
-        else:
-            return class_results, image_features, None, None, sparse_loss#, attn
+        
+        return class_results, image_features, None, None, sparse_loss#, attn
 
 
