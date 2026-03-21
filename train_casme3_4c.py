@@ -53,7 +53,7 @@ parser.add_argument('--print-freq', type=int, default=100)
 parser.add_argument('--milestones', nargs='+', type=int, default=30)
 parser.add_argument('--seed', type=int, default=42)
 parser.add_argument('--job-id', type=str, default="OK")
-parser.add_argument('--laq-checkpoint', type=str, default="vae.736000.pt") # /home/yicheng/LAPA/laq/results3/vae.22000.pt 32VOX/736000
+parser.add_argument('--laq-checkpoint', type=str, default="vae.736000.pt")
 parser.add_argument('--instruction', type=str, default="Please play the role of a facial micro action describer. Objectively describe the subtle facial actions of the person present in the difference of two facial images.")
 parser.add_argument('--load-model', type=str, default="CLIP_L14")
 args = parser.parse_args()
@@ -192,41 +192,6 @@ class RafDataSet(data.Dataset):
 
         cat_img = torch.cat([transform_img, next_transform_img], dim=1)
         return cat_img, label_all
-
-
-class FocalLoss(nn.Module):
-    def __init__(self, gamma=2.0, alpha=None, reduction='mean'):
-        super(FocalLoss, self).__init__()
-        self.gamma = gamma
-        self.alpha = alpha  # alpha 可以是 None，或 Tensor [num_classes]
-        self.reduction = reduction
-
-    def forward(self, inputs, targets):
-        """
-        inputs: [B, C] - logits
-        targets: [B] - int64 class indices
-        """
-        log_probs = F.log_softmax(inputs, dim=1)
-        probs = torch.exp(log_probs)  # [B, C]
-        targets_onehot = F.one_hot(targets, num_classes=inputs.shape[1]).float()
-
-        pt = (probs * targets_onehot).sum(dim=1)  # [B]
-        log_pt = (log_probs * targets_onehot).sum(dim=1)  # [B]
-
-        if self.alpha is not None:
-            alpha_t = torch.tensor(self.alpha).to(inputs.device)
-            alpha_t = alpha_t[targets]  # [B]
-            loss = -alpha_t * (1 - pt) ** self.gamma * log_pt
-        else:
-            loss = -(1 - pt) ** self.gamma * log_pt
-
-        if self.reduction == 'mean':
-            return loss.mean()
-        elif self.reduction == 'sum':
-            return loss.sum()
-        else:
-            return loss
-
 
 def main():
 
