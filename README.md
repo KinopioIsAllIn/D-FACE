@@ -4,7 +4,7 @@
 
 Official Pytorch Implementation of 'From Pixels to Semantics: Unified Facial Action Representation Learning for Micro-Expression Analysis' (ICLR2026)
 
-The current version is still to be updated.
+The current version is still being updated. We will provide the pretraining details soon.
 
 ## Data preparation
 We cannot provide the datasets. Please apply for each dataset yourself. After downloading the files, move them into the datasets/ directory.
