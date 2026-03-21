@@ -15,6 +15,9 @@ After downloading the files, move them into the ```datasets/``` directory.
 python train_casme3_4c.py
 ```
 
+## Pretrained C-VQ-VAE
+please download the pretrained C-VQ-VAE weight from [google drive](https://drive.google.com/file/d/1W2OkviAHqKfZApFdTVBFPskqllOOzTsY/view?usp=sharing).
+
 ## Citation
 
 ```
