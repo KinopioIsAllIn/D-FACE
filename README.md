@@ -7,8 +7,7 @@ Official Pytorch Implementation of 'From Pixels to Semantics: Unified Facial Act
 The current version is still to be updated.
 
 ## Data preparation
-We can not provide the dataset, please apply for each dataset by yourself.
-After downloading the files, move them into the ```datasets/``` directory.
+We cannot provide the datasets. Please apply for each dataset yourself. After downloading the files, move them into the datasets/ directory.
 
 ## Train and validation on CAS(ME)^3 dataset for 4-class recognition
 ``` bash
@@ -16,7 +15,7 @@ python train_casme3_4c.py
 ```
 
 ## Pretrained C-VQ-VAE
-please download the pretrained C-VQ-VAE weight from [google drive](https://drive.google.com/file/d/1W2OkviAHqKfZApFdTVBFPskqllOOzTsY/view?usp=sharing).
+please download the pretrained C-VQ-VAE weights from [google drive](https://drive.google.com/file/d/1W2OkviAHqKfZApFdTVBFPskqllOOzTsY/view?usp=sharing).
 
 ## Citation
 
