@@ -29,6 +29,3 @@ please download the pretrained C-VQ-VAE weights from [google drive](https://driv
   booktitle={The Fourteenth International Conference on Learning Representations},
   year={2026}}
 ```
-
-## Acknowlegment
-We implement our source code based on [LAPA](https://github.com/LatentActionPretraining/LAPA) and [Exp-CLIP](https://github.com/zengqunzhao/Exp-CLIP).
