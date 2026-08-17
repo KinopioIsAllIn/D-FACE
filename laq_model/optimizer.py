@@ -5,7 +5,7 @@ def separate_weight_decayable_params(params):
     for param in params:
         param_list = no_wd_params if param.ndim < 2 else wd_params
         param_list.append(param)
-    return wd_params, no_wd_params
+    return wd_params, no_wd_params 
 
 def get_optimizer(
     params,
