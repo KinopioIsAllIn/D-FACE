@@ -99,7 +99,7 @@ class CASME3(Dataset):
         self.mode = mode
         self.get_images()
 
-    # 上采样的多种策略：Deconv, Deconv+Residual block, Pixel shuffle
+    # 上采样的多种策略：Deconv, Deconv+Residual block, Pixel shuffle 
     def get_images2(self, path='/home1/yicheng/optical-flow-extraction/dataset/CASME3/part_A/'):
         # path = os.path.join(path, 'samm_25', 'feature_25')
         annotation_path = os.path.join(path, 'annotation', 'CAS(ME)3_part_A_v1.xls')
