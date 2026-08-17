@@ -8,7 +8,7 @@ an_expression_of_name_ME5 = [
     "A happy expression with raised cheeks and pulled lip corners.",
     "A disgusted expression with lowered eyebrows, tightened eyelids, a wrinkled nose, and a raised upper lip.",
     "A repressed expression with depressed lip corners, and a slight chin raise.",
-    "A surprised expression with raised eyebrows and an open mouth."
+    "A surprised expression with raised eyebrows and an open mouth." 
 ]
 
 an_expression_of_name_ME5_SAMM = [
