@@ -6,7 +6,7 @@ import torch.nn.functional as F
 
 class PretrainedTextEncoder(nn.Module):
     def __init__(self, args):
-        super().__init__()
+        super().__init__() 
 
         device = torch.device("cuda") if torch.cuda.is_available() else "cpu"
 
