@@ -13,22 +13,6 @@ class NSVQ(torch.nn.Module):
     def __init__(self, dim, num_embeddings, embedding_dim, device=torch.device('cpu'), discarding_threshold=0.1, initialization='normal', code_seq_len=1, patch_size=32, image_size = 256):
         super(NSVQ, self).__init__()
 
-        """
-        Inputs:
-        
-        1. num_embeddings = Number of codebook entries
-        
-        2. embedding_dim = Embedding dimension (dimensionality of each input data sample or codebook entry)
-        
-        3. device = The device which executes the code (CPU or GPU)
-        
-        ########## change the following inputs based on your application ##########
-        
-        4. discarding_threshold = Percentage threshold for discarding unused codebooks
-        
-        5. initialization = Initial distribution for codebooks
-
-        """
         self.image_size = image_size
         self.num_embeddings = num_embeddings
         self.embedding_dim = embedding_dim
@@ -117,20 +101,21 @@ class NSVQ(torch.nn.Module):
 
     def encode(self, input_data, batch_size):
         # compute the distances between input and codebooks vectors
-        input_data = self.project_in(input_data) # b * 64 * 32
+        input_data = self.project_in(input_data)
         # change the order of the input_data to b * 32 * 64
         input_data = input_data.permute(0, 2, 1).contiguous()
         # reshape input_data to 4D b*h*w*d
         input_data = input_data.reshape(batch_size, self.embedding_dim, int(self.image_size/self.patch_size), int(self.image_size/self.patch_size))
         input_data = self.cnn_encoder(input_data) # 1*1 tensor
-        input_data = input_data.reshape(batch_size, self.embedding_dim, -1) # b * 32 * d^2
-        input_data = input_data.permute(0, 2, 1).contiguous() # b * 1 * 32
+        input_data = input_data.reshape(batch_size, self.embedding_dim, -1)
+        input_data = input_data.permute(0, 2, 1).contiguous()
         input_data = input_data.reshape(-1, self.embedding_dim)
         return input_data
     
     def decode(self, quantized_input, batch_size):
-        quantized_input = quantized_input.reshape(batch_size, self.embedding_dim, -1) # b * 32 * d^2
-        quantized_input = quantized_input.permute(0, 2, 1).contiguous() # b * 64 * 32
+        # shuffle
+        quantized_input = quantized_input.reshape(batch_size, self.embedding_dim, -1) 
+        quantized_input = quantized_input.permute(0, 2, 1).contiguous()
         
         quantized_input = self.project_out(quantized_input)
         return quantized_input
@@ -184,35 +169,6 @@ class NSVQ(torch.nn.Module):
                      + torch.sum(self.codebooks.t() ** 2, dim=0, keepdim=True))
 
         min_indices = torch.argmin(distances, dim=1)
-
-        # 想要手动控制indices的改变，就手动改变这里
-        # print(min_indices.shape) [ 6, 30, 30,  6, 23, 18, 23, 31
-        # min_indices[5::16] = 1
-        # min_indices[6::16] = 1
-        # min_indices[9::16] = 1
-        # min_indices[10::16] = 1
-        # min_indices[13::16] = 1
-        # min_indices[14::16] = 1
-        # min_indices[0::16] = 5
-        # min_indices[1::16] = 5
-        # min_indices[2::16] = 1
-        # min_indices[3::16] = 5
-        # min_indices[4::16] = 3
-        # min_indices[5::16] = 3
-        # min_indices[6::16] = 3
-        # min_indices[7::16] = 3    #19, 16,  27, 31, 20, 13, 19,  24]  [ 3, 30,  0, 14, 15, 28, 28, 16, 23, 24,  5, 26,  1,  8, 25,  4],
-        # min_indices[8::16] = 4  #
-        # min_indices[9::16] = 1
-        # min_indices[10::16] = 1
-        # min_indices[11::16] = 1
-        # min_indices[12::16] = 4
-        # min_indices[13::16] = 4
-        # min_indices[14::16] = 1
-        # min_indices[15::16] = 0
-
-        # 第四行甚至还有控制闭眼的
-
-        # [7, 4, 14, 9, 31, 27, 29, 27, 9, 24, 9, 23, 19, 24, 12, 9]
 
         # hard_quantized_input = cluster_centers_tensor[min_indices]
         hard_quantized_input = self.codebooks[min_indices]
