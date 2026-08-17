@@ -9,7 +9,7 @@ import torch.optim
 import torch.utils.data as data
 import torch.utils.data.distributed
 import torchvision.transforms as transforms
-# import torchvision.datasets as datasets
+# import torchvision.datasets as datasets 
 from models.Exp_CLIP import VQCodeTransformer, PretrainedTextEncoder
 import matplotlib
 matplotlib.use('Agg')
