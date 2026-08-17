@@ -45,7 +45,7 @@
 #         log[key] = old_value + new_value
 #     return log
 #
-# # main trainer class
+# # main trainer class 
 #
 # @beartype
 # class LAQTrainer(nn.Module):
