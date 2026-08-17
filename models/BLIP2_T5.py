@@ -11,7 +11,7 @@ def _split(data, full_batch_size, split_size):
     """
     Takes care of three cases:
     1. data is a tensor: e.g. last_hidden_state, pooler_output etc. split them on the batch_size dim
-    2. data is a tuple: e.g. hidden_states, attentions etc. Keep the tuple as it is and split each tensor in it and
+    2. data is a tuple: e.g. hidden_states, attentions etc. Keep the tuple as it is and split each tensor in it and 
        return a list of tuples
     3. data is a tuple of tuples, e.g. past_key_values. Keep the tuple as it is and split each tuple in it and
        return a list of tuples of tuples
