@@ -30,5 +30,5 @@ please download the pretrained C-VQ-VAE weights from [google drive](https://driv
   year={2026}}
 ```
 
-##Acknowledgement
+## Acknowledgement
 We implement the C-VQ-VAE based on [LAPA](https://github.com/LatentActionPretraining/LAPA).
