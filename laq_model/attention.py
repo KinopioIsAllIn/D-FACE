@@ -23,7 +23,7 @@ def l2norm(t):
     return F.normalize(t, dim = -1)
 
 # bias-less layernorm, being used in more recent T5s, PaLM, also in @borisdayma 's experiments shared with me
-# greater stability
+# greater stability 
 
 class LayerNorm(nn.Module):
     def __init__(self, dim):
