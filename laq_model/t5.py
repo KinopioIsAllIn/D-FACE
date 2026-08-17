@@ -2,7 +2,7 @@ import torch
 import transformers
 from transformers import T5Tokenizer, T5EncoderModel, T5Config
 
-# less warning messages since only using encoder
+# less warning messages since only using encoder 
 
 transformers.logging.set_verbosity_error()
 
