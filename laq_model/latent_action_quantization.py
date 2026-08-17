@@ -298,7 +298,6 @@ class LatentActionQuantization(nn.Module):
         normalized = F.normalize(codebook, dim=1)  # [N, D]
         similarity = torch.matmul(normalized, normalized.T)  # [N, N]
 
-        # 去除对角线，避免和自己比较
         mask = torch.eye(similarity.size(0), device=similarity.device).bool()
         off_diag_sim = similarity.masked_fill(mask, 0.0)
 
